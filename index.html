@@ -2,33 +2,27 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Test Fetch & Parse</title>
+  <title>Test Fetch</title>
 </head>
 <body>
-  <h2>Test: Fetch example.com and list links</h2>
+  <h2>Fetch Test</h2>
   <pre id="output">Loading…</pre>
 
 <script>
-async function testFetch() {
-  // 用 allorigins 抓 example.com（呢個網站肯俾人抓）
-  const url = "https://api.allorigins.win/raw?url=https://example.com";
+async function test() {
+  const url = "https://httpbin.org/html";  // 100% 可 fetch
 
   const html = await fetch(url).then(r => r.text());
 
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, "text/html");
 
-  const anchors = [...doc.querySelectorAll("a")];
+  const h1 = doc.querySelector("h1")?.innerText || "No H1 found";
 
-  const items = anchors.map(a => ({
-    text: a.innerText.trim(),
-    href: a.href
-  }));
-
-  document.getElementById("output").textContent = JSON.stringify(items, null, 2);
+  document.getElementById("output").textContent = h1;
 }
 
-testFetch();
+test();
 </script>
 </body>
 </html>
