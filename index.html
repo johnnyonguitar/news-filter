@@ -2,16 +2,16 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>HK News1 Filter</title>
+  <title>Test Fetch & Parse</title>
 </head>
 <body>
-  <h2>HK01 News1 Filter</h2>
+  <h2>Test: Fetch example.com and list links</h2>
   <pre id="output">Loading…</pre>
 
 <script>
-async function fetchHK01() {
-  // 改成你要嘅突發頁面
-  const url = "https://api.allorigins.win/raw?url=https://www.hk01.com/channel/6";
+async function testFetch() {
+  // 用 allorigins 抓 example.com（呢個網站肯俾人抓）
+  const url = "https://api.allorigins.win/raw?url=https://example.com";
 
   const html = await fetch(url).then(r => r.text());
 
@@ -20,34 +20,15 @@ async function fetchHK01() {
 
   const anchors = [...doc.querySelectorAll("a")];
 
-  // 你提供嘅 keyword
-  const keywords = [
-    "意外",
-    "工業意外",
-    "受傷",
-    "重傷",
-    "昏迷",
-    "觸電",
-    "中暑",
-    "突發",
-    "火警",
-    "爆炸"
-  ];
-
-  const items = anchors
-    .filter(a => a.href.includes("/article/"))
-    .map(a => ({
-      title: a.innerText.trim(),
-      url: a.href,
-    }))
-    .filter(item =>
-      keywords.some(k => item.title.includes(k))
-    );
+  const items = anchors.map(a => ({
+    text: a.innerText.trim(),
+    href: a.href
+  }));
 
   document.getElementById("output").textContent = JSON.stringify(items, null, 2);
 }
 
-fetchHK01();
+testFetch();
 </script>
 </body>
 </html>
