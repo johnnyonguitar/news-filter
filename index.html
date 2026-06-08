@@ -2,27 +2,55 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Test Fetch</title>
+  <title>HK01 News Filter</title>
 </head>
 <body>
-  <h2>Fetch Test</h2>
+  <h2>HK01 News Filter</h2>
   <pre id="output">Loading…</pre>
 
 <script>
-async function test() {
-  const url = "https://httpbin.org/html";  // 100% 可 fetch
+async function fetchHK01() {
+  // 你嘅 Cloudflare Worker URL
+  const url = "https://small-breeze-2694.umjohnny.workers.dev/";
 
   const html = await fetch(url).then(r => r.text());
 
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, "text/html");
 
-  const h1 = doc.querySelector("h1")?.innerText || "No H1 found";
+  const anchors = [...doc.querySelectorAll("a")];
 
-  document.getElementById("output").textContent = h1;
+  // 你嘅 keyword
+  const keywords = [
+    "意外",
+    "工業意外",
+    "受傷",
+    "重傷",
+    "昏迷",
+    "觸電",
+    "中暑",
+    "突發",
+    "火警",
+    "爆炸"
+  ];
+
+  const items = anchors
+    .filter(a => a.href.includes("/article/"))
+    .map(a => ({
+      title: a.innerText.trim(),
+      url: a.href
+    }))
+    .filter(item =>
+      keywords.some(k => item.title.includes(k))
+    );
+
+  document.getElementById("output").textContent =
+    JSON.stringify(items, null, 2);
 }
 
-test();
+fetchHK01();
 </script>
 </body>
 </html>
+
+
