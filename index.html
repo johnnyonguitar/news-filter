@@ -14,9 +14,10 @@ async function fetchHK01() {
 
   const data = await fetch(url).then(r => r.json());
 
+  // HK01 JSON 結構：items[n].data.articleId
   const items = data.items.map(item => ({
-    title: item.title,
-    url: "https://www.hk01.com/article/" + item.articleId
+    title: item.data.title,
+    url: "https://www.hk01.com/article/" + item.data.articleId
   }));
 
   document.getElementById("output").textContent =
