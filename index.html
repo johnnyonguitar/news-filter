@@ -2,44 +2,23 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>HK01 News Filter (Auto Detect)</title>
+  <title>HK01 News Filter</title>
 </head>
 <body>
-  <h2>HK01 News Filter (Auto Detect)</h2>
+  <h2>HK01 News Filter</h2>
   <pre id="output">Loading…</pre>
 
 <script>
 async function fetchHK01() {
   const url = "https://small-breeze-2694.umjohnny.workers.dev/";
 
-  const html = await fetch(url).then(r => r.text());
+  const data = await fetch(url).then(r => r.json());
 
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, "text/html");
-
-  const anchors = [...doc.querySelectorAll("a")];
-
-  // 自動偵測所有可能嘅 HK01 文章連結格式
-  const items = anchors
-    .filter(a =>
-      a.href.includes("/article/") ||               // 正常格式
-      a.getAttribute("href")?.includes("/article/") || // 相對路徑
-      a.dataset.articleId                            // lazy-load 格式
-    )
-    .map(a => {
-      let url = a.href;
-
-      // lazy-load 格式
-      if (a.dataset.articleId) {
-        url = "https://www.hk01.com/article/" + a.dataset.articleId;
-      }
-
-      return {
-        title: a.innerText.trim(),
-        url
-      };
-    })
-    .filter(item => item.title.length > 0);
+  // HK01 JSON 結構：data.items
+  const items = data.items.map(item => ({
+    title: item.title,
+    url: "https://www.hk01.com/article/" + item.articleId
+  }));
 
   document.getElementById("output").textContent =
     JSON.stringify(items, null, 2);
