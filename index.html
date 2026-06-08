@@ -10,7 +10,8 @@
 
 <script>
 async function fetchHK01() {
-  const url = "https://www.hk01.com/channel/1"; // 即時新聞頁面
+  const url = "https://api.allorigins.win/raw?url=https://www.hk01.com/channel/1";
+
   const html = await fetch(url).then(r => r.text());
 
   const parser = new DOMParser();
@@ -18,7 +19,6 @@ async function fetchHK01() {
 
   const anchors = [...doc.querySelectorAll("a")];
 
-  // 你提供的 keyword（已加入）
   const keywords = [
     "意外",
     "工業意外",
