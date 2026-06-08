@@ -14,11 +14,30 @@ async function fetchHK01() {
 
   const data = await fetch(url).then(r => r.json());
 
+  // 你嘅 keyword
+  const keywords = [
+    "意外",
+    "工業意外",
+    "受傷",
+    "重傷",
+    "昏迷",
+    "觸電",
+    "中暑",
+    "突發",
+    "火警",
+    "爆炸",
+    "天氣"
+  ];
+
   // HK01 JSON 結構：items[n].data.articleId
-  const items = data.items.map(item => ({
-    title: item.data.title,
-    url: "https://www.hk01.com/article/" + item.data.articleId
-  }));
+  const items = data.items
+    .map(item => ({
+      title: item.data.title,
+      url: "https://www.hk01.com/article/" + item.data.articleId
+    }))
+    .filter(item =>
+      keywords.some(k => item.title.includes(k))
+    );
 
   document.getElementById("output").textContent =
     JSON.stringify(items, null, 2);
